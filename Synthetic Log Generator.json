@@ -1,0 +1,259 @@
+{
+  "name": "Synthetic Log Generator",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "44cbcaff-7fb3-4954-8bfc-beeebab4e992",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "function uuidv4() {\n  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {\n    const r = Math.random() * 16 | 0;\n    const v = c === 'x' ? r : (r & 0x3 | 0x8);\n    return v.toString(16);\n  });\n}\n\nconst count = 30;\nconst statuses = ['Success', 'Failed', 'Partial'];\n\nfunction getRandomStatus() {\n  const roll = Math.random();\n  return roll < 0.7 ? 'Success' : roll < 0.95 ? 'Failed' : 'Partial';\n}\n\nfunction getRandomDuration() {\n  return Math.floor(Math.random() * (12000 - 100 + 1)) + 100;\n}\n\nfunction getRandomError() {\n  return Math.random() < 0.3 ? (Math.random() < 0.5 ? 'TimeoutError' : 'AuthFailed') : '';\n}\n\nfunction getRandomEmail() {\n  const domains = ['example.com', 'test.co', 'sample.org'];\n  const user = Math.random().toString(36).substring(7);\n  const domain = domains[Math.floor(Math.random() * domains.length)];\n  return `${user}@${domain}`;\n}\n\nconst logs = [];\nfor (let i = 0; i < count; i++) {\n  const start = new Date(Date.now() - Math.random() * 86400000);\n  const duration = getRandomDuration();\n  const end = new Date(start.getTime() + duration);\n\n  logs.push({\n    json: {\n      log_id: uuidv4(),\n      workflow_name: 'LeadCapture',\n      workflow_id: 'wf_' + Math.random().toString(36).substring(2, 8),\n      run_id: 'run_' + Math.random().toString(36).substring(2, 10),\n      status: getRandomStatus(),\n      start_time: start.toISOString(),\n      end_time: end.toISOString(),\n      duration_ms: duration,\n      nodes_executed: Math.floor(Math.random() * 5) + 3,\n      nodes_list: ['Start', 'Validate', 'SaveDB', 'Notify'],\n      error_message: getRandomError(),\n      attempts: Math.floor(Math.random() * 3) + 1,\n      payload_summary: `User=${getRandomEmail()}, Company=FakeCorp`,\n      is_synthetic: true,\n      note: \"Synthetic demo log\"\n    }\n  });\n}\n\nreturn logs;\n"
+      },
+      "id": "a4b2ec70-3e78-456d-b57c-a065daae2398",
+      "name": "Generate Synthetic Logs",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        256,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1XMTQgitN-0nCN5QIydBNTqRq9z_8QbxCSljXAZt3j-s",
+          "mode": "list",
+          "cachedResultName": "AutomationLogs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XMTQgitN-0nCN5QIydBNTqRq9z_8QbxCSljXAZt3j-s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XMTQgitN-0nCN5QIydBNTqRq9z_8QbxCSljXAZt3j-s/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "log_id": "={{ $json.log_id }}",
+            "workflow_name": "={{ $json.workflow_name }}",
+            "workflow_id": "={{ $json.workflow_id }}",
+            "run_id": "={{ $json.run_id }}",
+            "status": "={{ $json.status }}",
+            "start_time": "={{ $json.start_time }}",
+            "end_time": "={{ $json.end_time }}",
+            "duration_ms": "={{ $json.duration_ms }}",
+            "nodes_executed": "={{ $json.nodes_executed }}",
+            "nodes_list": "={{ $json.nodes_list }}",
+            "error_message": "={{ $json.error_message }}",
+            "attempts": "={{ $json.attempts }}",
+            "payload_summary": "={{ $json.payload_summary }}",
+            "is_synthetic": "={{ $json.is_synthetic }}",
+            "note": "={{ $json.note }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "log_id",
+              "displayName": "log_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "workflow_name",
+              "displayName": "workflow_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "workflow_id",
+              "displayName": "workflow_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "run_id",
+              "displayName": "run_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "start_time",
+              "displayName": "start_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "end_time",
+              "displayName": "end_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "duration_ms",
+              "displayName": "duration_ms",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "nodes_executed",
+              "displayName": "nodes_executed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "nodes_list",
+              "displayName": "nodes_list",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "attempts",
+              "displayName": "attempts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "payload_summary",
+              "displayName": "payload_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "is_synthetic",
+              "displayName": "is_synthetic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "note",
+              "displayName": "note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        464,
+        0
+      ],
+      "id": "f45d64bd-c502-43b7-949d-0ad77db45bcb",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qkYhaXbIuqSOvQhU",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Generate Synthetic Logs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Synthetic Logs": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d7352971-9d40-4f4e-a49a-5e718d2ce0d7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "783d7821794781d7674a6665cfa80d9eb1a40f66c841a9a485f599621972610d"
+  },
+  "id": "nSvP54a6SeGKI4Xf",
+  "tags": []
+}
