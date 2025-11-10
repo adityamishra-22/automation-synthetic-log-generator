@@ -66,7 +66,8 @@ This n8n workflow generates **synthetic execution logs** and appends them to a G
 ---
 
 ## 📸 Demo
-_Add a screenshot of your Google Sheet or sample dashboard here._
+<img width="982" height="378" alt="image" src="https://github.com/user-attachments/assets/0e153515-5913-419c-ae17-e4b0c99dfd3f" />
+
 
 ---
 
